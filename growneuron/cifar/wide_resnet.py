@@ -146,6 +146,7 @@ class WideResnet(tf.keras.Model):
       normalization_type,
       num_classes,
       l2,
+      final_pool_size = 8,
       seed = 42
       ):
     super().__init__(name='wide_resnet-{}-{}'.format(depth, width_multiplier))
@@ -180,7 +181,7 @@ class WideResnet(tf.keras.Model):
         BatchNormalization(beta_regularizer=l2_reg(l2),
                            gamma_regularizer=l2_reg(l2)),
         tf.keras.layers.Activation('relu'),
-        tf.keras.layers.AveragePooling2D(pool_size=8),
+        tf.keras.layers.AveragePooling2D(pool_size=final_pool_size),
         tf.keras.layers.Flatten(),
         tf.keras.layers.Dense(
             num_classes,
@@ -213,6 +214,7 @@ def create_model(
     normalization_type = 'batchnorm',
     num_classes = 10,
     l2_coef = 0.0,
+    final_pool_size = 8,
     **unused_kwargs):
   """Creates model."""
   normalization_type = NormalizationType[normalization_type]
@@ -221,5 +223,6 @@ def create_model(
                      block_width_multiplier=block_width_multiplier,
                      num_classes=num_classes,
                      normalization_type=normalization_type,
+                     final_pool_size=final_pool_size,
                      l2=l2_coef)
   return model

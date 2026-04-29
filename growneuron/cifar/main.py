@@ -220,8 +220,11 @@ def main(argv):
     grow_metrics = {layers[0]: tf.keras.metrics.Sum()
                     for layers in grow_layer_tuples}
     # Initialize the parameters.
+    # Use dataset-specific input shape if available, else default to CIFAR.
+    input_shape = getattr(ds_builder, 'input_shape', (32, 32, 3))
+
     def compile_model_fn():
-      model(tf.keras.Input((32, 32, 3)))
+      model(tf.keras.Input(input_shape))
     compile_model_fn()
     logging.info('Model input shape: %s', model.input_shape)
     logging.info('Model output shape: %s', model.output_shape)
